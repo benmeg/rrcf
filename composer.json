@@ -1,0 +1,8 @@
+{
+    "require": {
+        "renanbr/crossref-client": "1.1.0",
+        "voku/simple-cache": "^4.0",
+        "lasserafn/php-initials": "^3.1",
+        "phpmailer/phpmailer": "^6.5"
+    }
+}
