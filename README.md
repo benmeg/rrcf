@@ -25,3 +25,9 @@ This requires PHP and a MySQL (or MariaDB) installation. It also relies on [Comp
 ## Video explanation of project
 
 [![Talk by the website author, Ben Meghreblian, explaining the purpose of the website, including an overview of Registered Reports, the project's research questions, methodology, and a brief demonstration of the website](https://img.youtube.com/vi/eLCsgTHn7lI/0.jpg)](https://www.youtube.com/watch?v=eLCsgTHn7lI)
+
+## How to cite this project
+
+Meghreblian, B., Tzavella, L., & Chambers, C. (2025). Registered Reports Community Feedback (v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.17114996
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17114996.svg)](https://doi.org/10.5281/zenodo.17114996)
