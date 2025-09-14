@@ -6,7 +6,7 @@ The project is currently live at: [https://registeredreports.cardiff.ac.uk](http
 
 We share this code in case individuals or organisations wish to use and/or extend it for their own purposes. We will also accept pull requests for additional features/bug requests etc - please feel free to open an issue!
 
-<img src="assets/images/dashboard.png" width="60%" height="60%" />
+![Screenshot of website dashboard, blurred to obscure journal names](assets/images/dashboard.png)
 
 ## How to install your own instance
 This requires PHP and a MySQL (or MariaDB) installation. It also relies on [Composer](https://getcomposer.org) to manage the additional packages PHP uses (see `composer.json` in root directory) - please ensure all three are installed prior to continuing.
