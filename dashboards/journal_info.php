@@ -747,6 +747,11 @@ border-radius: 25px;
 .tooltip:hover .tooltiptext {
   visibility: visible;
 }
+
+.modal {
+    max-width: 900px;
+    overflow-y: auto;
+}
 </style>
 
 
@@ -1297,6 +1302,11 @@ else
 
 <?php echo $per_question_html; ?>
 
+<br />
+
+<div id="ex1" class="modal">
+    <a href="#" rel="modal:close">Close</a>
+</div>
 </main>
 <script>
 
@@ -1499,7 +1509,7 @@ function getResponseStructure (&$categories, &$question_ids, &$avg_responses, &$
 
                             if ($qid["question_type"] == 1 && $stage_counter == 1) {
 
-                                $struct_html = $struct_html . "<tr><td>" . stripslashes(trim(str_replace($q_source_replace, $q_target_replace, $question_parts_array[0]), "\"")) . "</td>";
+                                $struct_html = $struct_html . "<tr><td><a href='question_ranking.php?id=" . $qid['question_id'] . "' rel='modal:open' title='Show how different journals/platforms rank for this question'>📊</a>&nbsp;" . stripslashes(trim(str_replace($q_source_replace, $q_target_replace, $question_parts_array[0]), "\"")) . "</td>";
 
                                 $struct_html = $struct_html . getSurveyResponses($qid, $avg_responses, $categories[$j]['category_id'], "", "", $journal_name) . "</tr>";
                             }
@@ -1589,6 +1599,9 @@ function getResponseStructure (&$categories, &$question_ids, &$avg_responses, &$
 
   tippy('#tooltip_not-enough-data-item', { content: 'There are currently not enough responses for this question<br /><br />Once a minimum of 5 responses has been completed by authors or reviewers for this question, an average rating or summary of responses will appear.', allowHTML: true});
 </script>
+
+<script type="text/javascript" src="../assets/js/popper.min.js"></script>
+<script type="text/javascript" src="../assets/js/tippy-bundle.umd.min.js"></script>
 
 <?php
 include '../assets/layouts/footer.php';
