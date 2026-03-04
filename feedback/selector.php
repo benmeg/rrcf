@@ -959,13 +959,15 @@ else
 	// This is to allow deeplinking from a specific journal page to add
 	// feedback for that specific journal, pre-selecting that journal
 
-	if ( isset($_GET['id']) && $_GET['id'] != "" && $_GET['id'] <= sizeof($journals)) {
+	if ( isset($_GET['id']) && $_GET['id'] != "" && is_numeric($_GET['id']) && $_GET['id'] <= sizeof($journals)) {
+
+		$journal_id_deep_link = $_GET['id'];
 	?>
 
 	<script>
 	$(document).ready(()=>{
-		$("#journal").val('<?php echo $_GET['id']; ?>');
-		$("#journal").select2().val('<?php echo $_GET['id']; ?>');
+		$("#journal").val('<?php echo $journal_id_deep_link; ?>');
+		$("#journal").select2().val('<?php echo $journal_id_deep_link; ?>');
 	});
 	</script>
 

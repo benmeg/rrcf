@@ -41,8 +41,15 @@ if (mysqli_connect_errno()) {
 
 if (isset($_GET['uuid'])) {
 
+  $uuid = $_GET['uuid'] ?? '';
+
+  if (!isValidUuid($uuid)) {
+      http_response_code(400);
+      exit('Invalid UUID');
+  }
+
   $single_stage = false;
-  $sql = "SELECT `feedback_reviews`.`review_id`, `feedback_reviews`.`completed_on`, `journals`.`journal_name`, `feedback_reviews`.`academic_role` AS academic_role_id, `feedback_academic_roles`.`role_text` AS academic_role, `feedback_reviews`.`academic_role_text` FROM `feedback_reviews` INNER JOIN `journals` ON `feedback_reviews`.`journal_id` = `journals`.`journal_id` LEFT JOIN `feedback_academic_roles` ON `feedback_reviews`.`academic_role` = `feedback_academic_roles`.`role_id` WHERE `review_uuid` = UUID_TO_BIN('" . $_GET['uuid'] . "') AND `user_id`  = '" . $user_id . "' ORDER BY `stage_id` ASC";
+  $sql = "SELECT `feedback_reviews`.`review_id`, `feedback_reviews`.`completed_on`, `journals`.`journal_name`, `feedback_reviews`.`academic_role` AS academic_role_id, `feedback_academic_roles`.`role_text` AS academic_role, `feedback_reviews`.`academic_role_text` FROM `feedback_reviews` INNER JOIN `journals` ON `feedback_reviews`.`journal_id` = `journals`.`journal_id` LEFT JOIN `feedback_academic_roles` ON `feedback_reviews`.`academic_role` = `feedback_academic_roles`.`role_id` WHERE `review_uuid` = UUID_TO_BIN('" . $uuid . "') AND `user_id`  = '" . $user_id . "' ORDER BY `stage_id` ASC";
 
   if ($result = mysqli_query($db_handle, $sql)) {
 

@@ -29,8 +29,14 @@ $year2    = "";
 
 $refcode  = "";
 
+$uuid = $_GET['uuid'] ?? '';
 
-$url = ( (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . "/selector.php?uuid=" . $_GET['uuid'] . "&stage=";
+if (!isValidUuid($uuid)) {
+    http_response_code(400);
+    exit('Invalid UUID');
+}
+
+$url = ( (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . "/selector.php?uuid=" . $uuid . "&stage=";
 
 // Connect to database
 
@@ -47,7 +53,7 @@ if (mysqli_connect_errno()) {
 //
 // this gets info across all reviews for UUID:
 
-$sql = "SELECT `feedback_reviews`.`review_ref`, `journals`.`journal_name`, stage_id, `feedback_stages`.`stage_text`, start_date, end_date FROM feedback_reviews INNER JOIN `journals` ON `feedback_reviews`.`journal_id` = `journals`.`journal_id` INNER JOIN `feedback_stages` ON `feedback_reviews`.`sub_stage_id` = `feedback_stages`.`sub_stage_id` WHERE review_uuid = UUID_TO_BIN('" . $_GET['uuid'] . "') AND `feedback_reviews`.`user_id` = '" . $user_id . "' GROUP BY stage_id ORDER BY stage_id ASC";
+$sql = "SELECT `feedback_reviews`.`review_ref`, `journals`.`journal_name`, stage_id, `feedback_stages`.`stage_text`, start_date, end_date FROM feedback_reviews INNER JOIN `journals` ON `feedback_reviews`.`journal_id` = `journals`.`journal_id` INNER JOIN `feedback_stages` ON `feedback_reviews`.`sub_stage_id` = `feedback_stages`.`sub_stage_id` WHERE review_uuid = UUID_TO_BIN('" . $uuid . "') AND `feedback_reviews`.`user_id` = '" . $user_id . "' GROUP BY stage_id ORDER BY stage_id ASC";
 
 if ($result = mysqli_query($db_handle, $sql)) {
 
@@ -171,7 +177,7 @@ if ($journal2 != "") {
 <input type="hidden" name="journal_name_2" value="<?php echo $journal2 ?>">
 <input type="hidden" name="year_1" value="<?php echo $year1 ?>">
 <input type="hidden" name="year_2" value="<?php echo $year2 ?>">
-<input type="hidden" name="uuid" value="<?php echo $_GET['uuid'] ?>">
+<input type="hidden" name="uuid" value="<?php echo $uuid ?>">
 </form>
 <br />
 <p>N.B.
