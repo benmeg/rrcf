@@ -4,6 +4,7 @@
 
 define('TITLE', "Home");
 include '../assets/layouts/header.php';
+require '../feedback/functions.php';
 
 ?>
 <main>
@@ -29,51 +30,57 @@ include '../assets/layouts/header.php';
 
                     if (isset($_COOKIE["invite_uuid"]) && isset($_COOKIE["invite_stage"]) && check_verified() == true) {
 
-                        // Before presenting a link to the UUID/stage feedback in the cookie
-                        // We first check to make sure the user has not already completed feedback for this UUID/stage.
-                        // This is to avoid situations where, for whatever reason (probably browser quirk-related) the cookie was not cleared after
-                        // the user completed the feedback, meaning that the user could continue to get reminders on the home page every time they logged on (while the cookie was still valid i.e. for 30 days)
+                        if (isValidUuid($_COOKIE["invite_uuid"]) && is_numeric($_COOKIE["invite_stage"])) {
 
-                        // N.B. This does not check if the UUID already exists, only if the currently logged in user has completed a review
+                            // Before presenting a link to the UUID/stage feedback in the cookie
+                            // We first check to make sure the user has not already completed feedback for this UUID/stage.
+                            // This is to avoid situations where, for whatever reason (probably browser quirk-related) the cookie was not cleared after
+                            // the user completed the feedback, meaning that the user could continue to get reminders on the home page every time they logged on (while the cookie was still valid i.e. for 30 days)
 
-                        // Connect to database
+                            // N.B. This does not check if the UUID already exists, only if the currently logged in user has completed a review
 
-                        $db_handle = mysqli_connect($servername, $database_username, $database_password, $database_name) or die(mysql_error());
+                            $invite_uuid  = $_COOKIE["invite_uuid"];
+                            $invite_stage = $_COOKIE["invite_stage"];
 
-                        /* check connection */
+                            // Connect to database
 
-                        if (mysqli_connect_errno()) {
-                            printf("Connect failed: %s\n", mysqli_connect_error());
-                            exit();
-                        }
+                            $db_handle = mysqli_connect($servername, $database_username, $database_password, $database_name) or die(mysql_error());
 
-                        $sql = "SELECT COUNT(*) AS uuid_completed_count FROM `feedback_reviews` WHERE `review_uuid` = UUID_TO_BIN('" . $_COOKIE["invite_uuid"] . "') AND user_id = " . $_SESSION['id'] . " AND stage_id = " . $_COOKIE["invite_stage"] . ";";
+                            /* check connection */
 
-                        if ($result = mysqli_query($db_handle, $sql)) {
+                            if (mysqli_connect_errno()) {
+                                printf("Connect failed: %s\n", mysqli_connect_error());
+                                exit();
+                            }
 
-                            if (mysqli_num_rows($result) > 0) {
+                            $sql = "SELECT COUNT(*) AS uuid_completed_count FROM `feedback_reviews` WHERE `review_uuid` = UUID_TO_BIN('" . $invite_uuid . "') AND user_id = " . $_SESSION['id'] . " AND stage_id = " . $invite_stage . ";";
 
-                                $user_feedback_count_by_uuid = mysqli_fetch_all($result, MYSQLI_ASSOC);
+                            if ($result = mysqli_query($db_handle, $sql)) {
 
-                                // no feedback has been given by this user for this UUID/stage - so display a direct link to complete it.
+                                if (mysqli_num_rows($result) > 0) {
 
-                                if ($user_feedback_count_by_uuid['0']['uuid_completed_count'] == 0) { ?>
+                                    $user_feedback_count_by_uuid = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-                                    &#9888;&#65039;&nbsp;You have a co-author invitation pending - <a href="../feedback/selector.php?uuid=<?php echo $_COOKIE["invite_uuid"] ?>&stage=<?php echo $_COOKIE["invite_stage"] ?>">click here</a> to complete the feedback.&nbsp;<span id="tooltip_pending_invite" class="survey-tooltip" tabindex="-1">?</span><br /><br />
+                                    // no feedback has been given by this user for this UUID/stage - so display a direct link to complete it.
 
-                                <?php
-                                }
+                                    if ($user_feedback_count_by_uuid['0']['uuid_completed_count'] == 0) { ?>
 
-                                else
+                                        &#9888;&#65039;&nbsp;You have a co-author invitation pending - <a href="../feedback/selector.php?uuid=<?php echo $invite_uuid; ?>&stage=<?php echo $invite_stage; ?>">click here</a> to complete the feedback.&nbsp;<span id="tooltip_pending_invite" class="survey-tooltip" tabindex="-1">?</span><br /><br />
 
-                                // feedback already given - clear this cookie
+                                    <?php
+                                    }
 
-                                {
-                                  unset($_COOKIE['invite_uuid']);
-                                  unset($_COOKIE['invite_stage']);
+                                    else
 
-                                  setcookie("invite_uuid",  "", time() - 3600, "/");
-                                  setcookie("invite_stage", "", time() - 3600, "/");
+                                    // feedback already given - clear this cookie
+
+                                    {
+                                      unset($_COOKIE['invite_uuid']);
+                                      unset($_COOKIE['invite_stage']);
+
+                                      setcookie("invite_uuid",  "", time() - 3600, "/");
+                                      setcookie("invite_stage", "", time() - 3600, "/");
+                                    }
                                 }
                             }
                         }
