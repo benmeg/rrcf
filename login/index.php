@@ -14,8 +14,10 @@ check_logged_out();
         <?php
 
         if ( isset($_GET['redirect']) && $_GET['redirect'] != '') {
+
+           $redirect_url = htmlspecialchars($_GET['redirect'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         ?>
-        <input type="hidden" name="redirect" value="<?php echo $_GET['redirect']; ?>">
+        <input type="hidden" name="redirect" value="<?php echo $redirect_url; ?>">
 
         <?php
         }
